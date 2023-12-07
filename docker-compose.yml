@@ -1,0 +1,73 @@
+version: '3'
+services:
+  nginx:
+    image: "nginx:1.25.2"
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes: 
+      - /home/sora/www:/usr/share/nginx/html/
+      - /usr/local/nginx/nginx.conf/:/etc/nginx/nginx.conf
+      - /usr/local/nginx/conf.d:/etc/nginx/conf.d
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - server
+    depends_on: 
+      - php-fpm8
+  php-fpm8:
+    build:
+      context: ./php/fpm
+      dockerfile: Dockerfile
+    image: lysowc/php-fpm:8.2.10
+    container_name: php-fpm8
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - /home/sora/www:/usr/share/nginx/html/
+      - /usr/local/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - server
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    image: lysowc/mysql:8.0.35
+    container_name: mysql
+    ports:
+      - "6033:3306"
+    volumes:
+      #- /usr/local/mysql/data:/var/lib/mysql
+      - /usr/local/mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+      - /usr/local/mysql/logs:/var/log/mysql
+      - /usr/local/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: weicw@964395617
+      TZ: Asia/Shanghai
+    networks:
+      - server
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    container_name: redis
+    image: lysowc/redis:7.2.3
+    ports:
+      - "9736:6379"
+    volumes:
+      - /usr/local/redis/logs:/usr/local/redis/logs
+      - /usr/local/redis/data:/usr/local/redis/data
+      - /usr/local/redis/conf/redis.conf:/usr/local/redis/conf/redis.conf
+    environment:
+      - TZ=Asia/Shanghai
+    privileged: true
+    networks:
+      - server
+    command: redis-server /usr/local/redis/conf/redis.conf
+networks:
+  server:
+    driver: bridge
+

@@ -1,11 +1,17 @@
 #!/bin/bash
 path=$1
+if [ !$path ]
+then
+   echo "项目根路径不可为空"
+   exit
+fi
+
 cd /usr/local/
 mkdir -p mysql redis php nginx
 
 #配置nginx
 cd nginx
-cp $1/docker-server/nginx/* ./
+cp -r $1/docker-server/nginx/* ./
 cd ..
 
 #配置mysql

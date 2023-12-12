@@ -1,6 +1,5 @@
 #!/bin/bash
-path=$1
-if [ !$path ]
+if [ -z $1 ]
 then
    echo "项目根路径不可为空"
    exit

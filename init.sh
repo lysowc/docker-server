@@ -15,10 +15,9 @@ cd ..
 
 #配置mysql
 cd mysql
-mkdir -p data logs conf.d
-chmod 766 logs/
-cd conf.d/
-cp $1/docker-server/mysql/my.cnf ./
+mkdir -p data logs
+chmod 777 logs
+cp -r $1/docker-server/mysql/conf.d ./
 cp -r $1/docker-server/mysql/docker-entrypoint-initdb.d/ ./
 
 
@@ -32,7 +31,8 @@ chmod 777 logs/ data/
 
 #配置php
 cd /usr/local/php/
+cp $1/docker-server/php/php8/fpm/php.ini ./
 mkdir php-fpm.d
 cd php-fpm.d/
-cp -r $1/docker-server/php/fpm/www.conf ./
+cp $1/docker-server/php/php8/fpm/zz-docker.conf ./
 

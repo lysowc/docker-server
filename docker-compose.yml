@@ -5,32 +5,84 @@ services:
     container_name: nginx
     ports:
       - "80:80"
-    volumes: 
-      - /home/sora/www:/usr/share/nginx/html/
-      - /usr/local/nginx/nginx.conf/:/etc/nginx/nginx.conf
-      - /usr/local/nginx/conf.d:/etc/nginx/conf.d
+    volumes:
+      - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
+      - ${DEFAULT_NGINX_DIR}/nginx.conf/:/etc/nginx/nginx.conf
+      - ${DEFAULT_NGINX_DIR}/conf.d:/etc/nginx/conf.d
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${DEFAULT_TIME_ZONE}
     networks:
       - server
-    depends_on: 
-      - php-fpm8
-  php-fpm8:
+    depends_on:
+      - php-fpm
+
+  php-fpm:
     build:
-      context: ./php/fpm
-      dockerfile: Dockerfile
+      context: ./php/php8/fpm
+      args:
+        - DEFAULT_PHP_EXT_BCMATH=${DEFAULT_PHP_EXT_BCMATH}
+        - DEFAULT_PHP_EXT_BZ2=${DEFAULT_PHP_EXT_BZ2}
+        - DEFAULT_PHP_EXT_CALENDAR=${DEFAULT_PHP_EXT_CALENDAR}
+        - DEFAULT_PHP_EXT_DBA=${DEFAULT_PHP_EXT_DBA}
+        - DEFAULT_PHP_EXT_DL_TEST=${DEFAULT_PHP_EXT_DL_TEST}
+        - DEFAULT_PHP_EXT_EXIF=${DEFAULT_PHP_EXT_EXIF}
+        - DEFAULT_PHP_EXT_FFI=${DEFAULT_PHP_EXT_FFI}
+        - DEFAULT_PHP_EXT_GD=${DEFAULT_PHP_EXT_GD}
+        - DEFAULT_PHP_EXT_GETTEXT=${DEFAULT_PHP_EXT_GETTEXT}
+        - DEFAULT_PHP_EXT_GMP=${DEFAULT_PHP_EXT_GMP}
+        - DEFAULT_PHP_EXT_IMAP=${DEFAULT_PHP_EXT_IMAP}
+        - DEFAULT_PHP_EXT_INTL=${DEFAULT_PHP_EXT_INTL}
+        - DEFAULT_PHP_EXT_LDAP=${DEFAULT_PHP_EXT_LDAP}
+        - DEFAULT_PHP_EXT_MYSQLI=${DEFAULT_PHP_EXT_MYSQLI}
+        - DEFAULT_PHP_EXT_OPCACHE=${DEFAULT_PHP_EXT_OPCACHE}
+        - DEFAULT_PHP_EXT_PCNTL=${DEFAULT_PHP_EXT_PCNTL}
+        - DEFAULT_PHP_EXT_PDO=${DEFAULT_PHP_EXT_PDO}
+        - DEFAULT_PHP_EXT_PDO_DBLIB=${DEFAULT_PHP_EXT_PDO_DBLIB}
+        - DEFAULT_PHP_EXT_PDO_MYSQL=${DEFAULT_PHP_EXT_PDO_MYSQL}
+        - DEFAULT_PHP_EXT_PSPELL=${DEFAULT_PHP_EXT_PSPELL}
+        - DEFAULT_PHP_EXT_SHMOP=${DEFAULT_PHP_EXT_SHMOP}
+        - DEFAULT_PHP_EXT_SNMP=${DEFAULT_PHP_EXT_SNMP}
+        - DEFAULT_PHP_EXT_SOAP=${DEFAULT_PHP_EXT_SOAP}
+        - DEFAULT_PHP_EXT_SOCKETS=${DEFAULT_PHP_EXT_SOCKETS}
+        - DEFAULT_PHP_EXT_SYSVMSG=${DEFAULT_PHP_EXT_SYSVMSG}
+        - DEFAULT_PHP_EXT_SYSVSEM=${DEFAULT_PHP_EXT_SYSVSEM}
+        - DEFAULT_PHP_EXT_SYSVSHM=${DEFAULT_PHP_EXT_SYSVSHM}
+        - DEFAULT_PHP_EXT_TIDY=${DEFAULT_PHP_EXT_TIDY}
+        - DEFAULT_PHP_EXT_XSL=${DEFAULT_PHP_EXT_XSL}
+        - DEFAULT_PHP_EXT_ZIP=${DEFAULT_PHP_EXT_ZIP}
+        - DEFAULT_PHP_EXT_PROTOBUF=${DEFAULT_PHP_EXT_PROTOBUF}
+        - DEFAULT_PHP_EXT_XLSWRITER=${DEFAULT_PHP_EXT_XLSWRITER}
+        - DEFAULT_PHP_EXT_GNUPG=${DEFAULT_PHP_EXT_GNUPG}
+        - DEFAULT_PHP_EXT_SSH2=${DEFAULT_PHP_EXT_SSH2}
+        - DEFAULT_PHP_EXT_LIBFAKETIME=${DEFAULT_PHP_EXT_LIBFAKETIME}
+        - DEFAULT_PHP_EXT_REDIS=${DEFAULT_PHP_EXT_REDIS}
+        - DEFAULT_PHP_EXT_SWOOLE=${DEFAULT_PHP_EXT_SWOOLE}
+        - DEFAULT_PHP_EXT_MONGODB=${DEFAULT_PHP_EXT_MONGODB}
+        - DEFAULT_PHP_EXT_AMQP=${DEFAULT_PHP_EXT_AMQP}
+        - DEFAULT_PHP_EXT_SMBCLIENT=${DEFAULT_PHP_EXT_SMBCLIENT}
+        - DEFAULT_PHP_EXT_APCU=${DEFAULT_PHP_EXT_APCU}
+        - DEFAULT_PHP_EXT_YAML=${DEFAULT_PHP_EXT_YAML}
+        - DEFAULT_PHP_EXT_RDKAFKA=${DEFAULT_PHP_EXT_RDKAFKA}
+        - DEFAULT_PHP_EXT_MAILPARSE=${DEFAULT_PHP_EXT_MAILPARSE}
+        - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
+        - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
+        - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
     image: lysowc/php-fpm:8.2.10
-    container_name: php-fpm8
+    container_name: php-fpm
     ports:
       - "9000:9000"
-      - "9001:9001"
+      - "9003:9003"
     volumes:
-      - /home/sora/www:/usr/share/nginx/html/
-      - /usr/local/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
+      - ${DEFAULT_PHP_DIR}/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ${DEFAULT_PHP_DIR}/php.ini:/usr/local/etc/php/conf.d/php.ini
     environment:
-      TZ: Asia/Shanghai
+      TZ: ${DEFAULT_TIME_ZONE}
+    depends_on:
+      - mysql
     networks:
       - server
+
   mysql:
     build:
       context: ./mysql
@@ -38,36 +90,38 @@ services:
     image: lysowc/mysql:8.0.35
     container_name: mysql
     ports:
-      - "6033:3306"
+      - "${DEFAULT_MYSQL_PORT}:3306"
     volumes:
-      #- /usr/local/mysql/data:/var/lib/mysql
-      - /usr/local/mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
-      - /usr/local/mysql/logs:/var/log/mysql
-      - /usr/local/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ${DEFAULT_MYSQL_DIR}/data:/var/lib/mysql
+      - ${DEFAULT_MYSQL_DIR}/conf.d:/etc/mysql/conf.d
+      - ${DEFAULT_MYSQL_DIR}/logs:/var/log/mysql
+      - ${DEFAULT_MYSQL_DIR}/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: weicw@964395617
-      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${DEFAULT_MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIME_ZONE}
+    depends_on:
+      - redis
     networks:
       - server
+
   redis:
     build:
       context: ./redis
-      dockerfile: Dockerfile
     container_name: redis
     image: lysowc/redis:7.2.3
-    ports:
-      - "9736:6379"
-    volumes:
-      - /usr/local/redis/logs:/usr/local/redis/logs
-      - /usr/local/redis/data:/usr/local/redis/data
-      - /usr/local/redis/conf/redis.conf:/usr/local/redis/conf/redis.conf
-    environment:
-      - TZ=Asia/Shanghai
     privileged: true
+    ports:
+      - "${DEFAULT_REDIS_PORT}:6379"
+    volumes:
+      - ${DEFAULT_REDIS_DIR}/logs:${DEFAULT_REDIS_DIR}/logs
+      - ${DEFAULT_REDIS_DIR}/data:${DEFAULT_REDIS_DIR}/data
+      - ${DEFAULT_REDIS_DIR}/conf/redis.conf:${DEFAULT_REDIS_DIR}/conf/redis.conf
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    command: redis-server ${DEFAULT_REDIS_DIR}/conf/redis.conf
     networks:
       - server
-    command: redis-server /usr/local/redis/conf/redis.conf
+
 networks:
   server:
     driver: bridge
-

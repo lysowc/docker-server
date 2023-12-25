@@ -8,6 +8,9 @@ RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.lis
 sed -i 's/security.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.list.d/debian.sources && \
 sed -i 's/security-cdn.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.list.d/debian.sources
 
+RUN groupadd sora && \
+    useradd -g sora sora
+
 #安装一些依赖库
 RUN apt-get update -yqq && \
 pecl channel-update pecl.php.net && \

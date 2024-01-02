@@ -10,7 +10,10 @@ mkdir -p mysql redis php nginx
 
 #配置nginx
 cd nginx
-cp -r $1/docker-server/nginx/* ./
+mkdir logs
+chmod 777 logs
+cp -r $1/docker-server/nginx/conf.d ./
+cp $1/docker-server/nginx/nginx.conf ./
 cd ..
 
 #配置mysql
@@ -23,10 +26,8 @@ cp -r $1/docker-server/mysql/docker-entrypoint-initdb.d/ ./
 
 #配置redis
 cd /usr/local/redis/
-mkdir -p logs data conf
-cd conf/
+mkdir -p logs data
 cp $1/docker-server/redis/redis.conf ./
-cd ..
 chmod 777 logs/ data/
 
 #配置php

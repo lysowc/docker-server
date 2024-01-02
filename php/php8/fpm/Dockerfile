@@ -8,13 +8,25 @@ RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.lis
 sed -i 's/security.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.list.d/debian.sources && \
 sed -i 's/security-cdn.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.list.d/debian.sources
 
-RUN groupadd sora && \
-    useradd -g sora sora
-
 #安装一些依赖库
 RUN apt-get update -yqq && \
 pecl channel-update pecl.php.net && \
 apt-get install -yqq wget git lrzsz gnupg2 apt-utils gnupg2 unzip
+
+RUN groupadd -g 1001 sora
+RUN useradd -u 1001 -g sora sora
+
+RUN apt-get install -y libmagickwand-dev libmagickcore-dev
+
+RUN pecl install imagick \  
+    && docker-php-ext-enable imagick
+
+ARG DEFAULT_PHP_EXT_GD=false
+RUN if [ ${DEFAULT_PHP_EXT_GD} = true ]; then \
+    apt install -y libpng-dev libjpeg-dev && \
+    docker-php-ext-install gd \
+;fi
+
 
 ARG DEFAULT_PHP_EXT_BCMATH=false
 RUN if [ ${DEFAULT_PHP_EXT_BCMATH} = true ]; then \

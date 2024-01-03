@@ -3,7 +3,12 @@ services:
   nginx:
     build:
       context: ./nginx
-    image: "lysowc/nginx:1.25.2"
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+    image: "lysoulwc/nginx:1.25.2"
     container_name: nginx
     ports:
       - "80:80"
@@ -25,6 +30,10 @@ services:
     build:
       context: ./php/php8/fpm
       args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
         - DEFAULT_PHP_EXT_BCMATH=${DEFAULT_PHP_EXT_BCMATH}
         - DEFAULT_PHP_EXT_BZ2=${DEFAULT_PHP_EXT_BZ2}
         - DEFAULT_PHP_EXT_CALENDAR=${DEFAULT_PHP_EXT_CALENDAR}
@@ -72,7 +81,7 @@ services:
         - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
         - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
         - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
-    image: lysowc/php-fpm:8.2.10
+    image: lysoulwc/php-fpm:8.2.10
     container_name: php-fpm
     ports:
       - "9000:9000"
@@ -81,10 +90,9 @@ services:
       - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
       - ${DEFAULT_PHP_DIR}/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ${DEFAULT_PHP_DIR}/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/log:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
-    depends_on:
-      - mysql
     networks:
       - server
     restart: always
@@ -92,21 +100,26 @@ services:
   mysql:
     build:
       context: ./mysql
-      dockerfile: Dockerfile
-    image: lysowc/mysql:8.0.35
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+    image: lysoulwc/mysql:8.0.35
     container_name: mysql
     ports:
       - "${DEFAULT_MYSQL_PORT}:3306"
     volumes:
       - ${DEFAULT_MYSQL_DIR}/data:/var/lib/mysql
-      - ${DEFAULT_MYSQL_DIR}/conf.d:/etc/mysql/conf.d
+      - ${DEFAULT_MYSQL_DIR}/my.cnf:/etc/my.cnf
       - ${DEFAULT_MYSQL_DIR}/logs:/var/log/mysql
+      - ${DEFAULT_MYSQL_DIR}/bin:/var/lib/mysql_bin
+      - ${DEFAULT_MYSQL_DIR}/slow:/var/lib/mysql_slow
       - ${DEFAULT_MYSQL_DIR}/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: ${DEFAULT_MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIME_ZONE}
-    depends_on:
-      - redis
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
     networks:
       - server
     restart: always
@@ -114,8 +127,13 @@ services:
   redis:
     build:
       context: ./redis
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
     container_name: redis
-    image: lysowc/redis:7.2.3
+    image: lysoulwc/redis:7.2.3
     privileged: true
     ports:
       - "${DEFAULT_REDIS_PORT}:6379"
@@ -127,6 +145,7 @@ services:
       TZ: ${DEFAULT_TIME_ZONE}
     networks:
       - server
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
     restart: always
 
 networks:

@@ -1,7 +1,7 @@
 #zts版本
 FROM php:8.2.10-fpm
 
-LABEL maintainer="lysowc <lysowc@gmail.com>" version="0.01" license="MIT" describe="local-server"
+LABEL maintainer="lysoulwc <lysoulwc@gmail.com>" version="0.01" license="MIT" describe="local-server"
 
 #替换apt源
 RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.list.d/debian.sources && \
@@ -13,8 +13,12 @@ RUN apt-get update -yqq && \
 pecl channel-update pecl.php.net && \
 apt-get install -yqq wget git lrzsz gnupg2 apt-utils gnupg2 unzip
 
-RUN groupadd -g 1001 sora
-RUN useradd -u 1001 -g sora sora
+ARG DEFAULT_GROUP_UID=1001
+ARG DEFAULT_USER_UID=1001
+ARG DEFAULT_GROUP_NAME=sora
+ARG DEFAULT_USER_NAME=sora
+RUN groupadd -g ${DEFAULT_GROUP_UID} ${DEFAULT_GROUP_NAME}
+RUN useradd -u ${DEFAULT_USER_UID} -g ${DEFAULT_USER_NAME} ${DEFAULT_GROUP_NAME}
 
 RUN apt-get install -y libmagickwand-dev libmagickcore-dev
 

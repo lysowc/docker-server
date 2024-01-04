@@ -23,19 +23,15 @@ cp $1/docker-server/nginx/nginx.conf ./
 
 #配置mysql
 cd $dir/mysql
+mkdir data bin logs slow
 cp -r $1/docker-server/mysql/my.cnf ./
 cp -r $1/docker-server/mysql/docker-entrypoint-initdb.d/ ./
-cp -r $1/docker-server/mysql/data/ ./
-cp -r $1/docker-server/mysql/bin/ ./
-cp -r $1/docker-server/mysql/logs/ ./
-cp -r $1/docker-server/mysql/slow/ ./
 
 
 #配置redis
 cd $dir/redis
-mkdir -p logs
+mkdir -p logs data
 cp $1/docker-server/redis/redis.conf ./
-cp -r $1/docker-server/redis/data ./
 chmod 777 -R logs
 
 #配置php

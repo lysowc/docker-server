@@ -90,7 +90,7 @@ services:
       - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
       - ${DEFAULT_PHP_DIR}/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
       - ${DEFAULT_PHP_DIR}/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ${DEFAULT_PHP_DIR}/log:/var/log/php
+      - ${DEFAULT_PHP_DIR}/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
     networks:

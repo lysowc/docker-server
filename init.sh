@@ -110,8 +110,8 @@ else
 fi
 
 echo "准备复制配置文件..."
-cp -r $root_path/docker-server/nginx/conf.d $dir/nginx
-cp $root_path/docker-server/nginx/nginx.conf $dir/nginx
+cp -r $root_path/nginx/conf.d $dir/nginx
+cp $root_path/nginx/nginx.conf $dir/nginx
 
 echo "配置文件复制完成..."
 echo "--------------------------------------------"
@@ -173,11 +173,11 @@ fi
 #fi
 
 echo "准备复制配置文件..."
-cp $root_path/docker-server/mysql/my.cnf $dir/mysql
-cp -r $root_path/docker-server/mysql/bin $dir/mysql
-cp -r $root_path/docker-server/mysql/data $dir/mysql
-cp -r $root_path/docker-server/mysql/slow $dir/mysql
-cp -r $root_path/docker-server/mysql/docker-entrypoint-initdb.d $dir/mysql
+cp $root_path/mysql/my.cnf $dir/mysql
+cp -r $root_path/mysql/bin $dir/mysql
+cp -r $root_path/mysql/data $dir/mysql
+cp -r $root_path/mysql/slow $dir/mysql
+cp -r $root_path/mysql/docker-entrypoint-initdb.d $dir/mysql
 
 echo "配置文件复制完成..."
 echo "--------------------------------------------"
@@ -216,8 +216,8 @@ fi
 #fi
 
 echo "准备复制配置文件..."
-cp -r $root_path/docker-server/redis/data $dir/redis
-cp $root_path/docker-server/redis/redis.conf $dir/redis
+cp -r $root_path/redis/data $dir/redis
+cp $root_path/redis/redis.conf $dir/redis
 
 echo "配置文件复制完成..."
 echo "--------------------------------------------"
@@ -257,8 +257,8 @@ else
 fi
 
 echo "准备复制配置文件..."
-cp -r $root_path/docker-server/php/php8/fpm/php.ini $dir/php
-cp -r $root_path/docker-server/php/php8/fpm/zz-docker.conf $dir/php/php-fpm.d
+cp -r $root_path/php/php8/fpm/php.ini $dir/php
+cp -r $root_path/php/php8/fpm/zz-docker.conf $dir/php/php-fpm.d
 
 echo "配置文件复制完成..."
 echo "--------------------------------------------"

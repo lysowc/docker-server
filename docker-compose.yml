@@ -24,6 +24,7 @@ services:
       - server
     depends_on:
       - php-fpm
+      - php-fpm7
     restart: always
 
   php-fpm:
@@ -88,11 +89,187 @@ services:
       - "9003:9003"
     volumes:
       - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
-      - ${DEFAULT_PHP_DIR}/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ${DEFAULT_PHP_DIR}/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ${DEFAULT_PHP_DIR}/logs:/var/log/php
+      - ${DEFAULT_PHP_DIR}/fpm/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ${DEFAULT_PHP_DIR}/fpm/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/fpm/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
+    networks:
+      - server
+    restart: always
+
+  php-fpm7:
+    build:
+      context: ./php/php7/fpm
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+    image: lysoulwc/php-fpm:7.4.3
+    container_name: php-fpm7
+    ports:
+      - "9002:9002"
+    volumes:
+      - ${DEFAULT_WORK_DIR}/php7:/usr/share/nginx/html/php7
+      - ${DEFAULT_PHP_DIR}/fpm7/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ${DEFAULT_PHP_DIR}/fpm7/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/fpm7/logs:/var/log/php
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    networks:
+      - server
+    restart: always
+
+  zts:
+    build:
+      context: ./php/php8/zts
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+        - DEFAULT_PHP_EXT_BCMATH=${DEFAULT_PHP_EXT_BCMATH}
+        - DEFAULT_PHP_EXT_BZ2=${DEFAULT_PHP_EXT_BZ2}
+        - DEFAULT_PHP_EXT_CALENDAR=${DEFAULT_PHP_EXT_CALENDAR}
+        - DEFAULT_PHP_EXT_DBA=${DEFAULT_PHP_EXT_DBA}
+        - DEFAULT_PHP_EXT_DL_TEST=${DEFAULT_PHP_EXT_DL_TEST}
+        - DEFAULT_PHP_EXT_EXIF=${DEFAULT_PHP_EXT_EXIF}
+        - DEFAULT_PHP_EXT_FFI=${DEFAULT_PHP_EXT_FFI}
+        - DEFAULT_PHP_EXT_GD=${DEFAULT_PHP_EXT_GD}
+        - DEFAULT_PHP_EXT_GETTEXT=${DEFAULT_PHP_EXT_GETTEXT}
+        - DEFAULT_PHP_EXT_GMP=${DEFAULT_PHP_EXT_GMP}
+        - DEFAULT_PHP_EXT_IMAP=${DEFAULT_PHP_EXT_IMAP}
+        - DEFAULT_PHP_EXT_INTL=${DEFAULT_PHP_EXT_INTL}
+        - DEFAULT_PHP_EXT_LDAP=${DEFAULT_PHP_EXT_LDAP}
+        - DEFAULT_PHP_EXT_MYSQLI=${DEFAULT_PHP_EXT_MYSQLI}
+        - DEFAULT_PHP_EXT_OPCACHE=${DEFAULT_PHP_EXT_OPCACHE}
+        - DEFAULT_PHP_EXT_PCNTL=${DEFAULT_PHP_EXT_PCNTL}
+        - DEFAULT_PHP_EXT_PDO=${DEFAULT_PHP_EXT_PDO}
+        - DEFAULT_PHP_EXT_PDO_DBLIB=${DEFAULT_PHP_EXT_PDO_DBLIB}
+        - DEFAULT_PHP_EXT_PDO_MYSQL=${DEFAULT_PHP_EXT_PDO_MYSQL}
+        - DEFAULT_PHP_EXT_PSPELL=${DEFAULT_PHP_EXT_PSPELL}
+        - DEFAULT_PHP_EXT_SHMOP=${DEFAULT_PHP_EXT_SHMOP}
+        - DEFAULT_PHP_EXT_SNMP=${DEFAULT_PHP_EXT_SNMP}
+        - DEFAULT_PHP_EXT_SOAP=${DEFAULT_PHP_EXT_SOAP}
+        - DEFAULT_PHP_EXT_SOCKETS=${DEFAULT_PHP_EXT_SOCKETS}
+        - DEFAULT_PHP_EXT_SYSVMSG=${DEFAULT_PHP_EXT_SYSVMSG}
+        - DEFAULT_PHP_EXT_SYSVSEM=${DEFAULT_PHP_EXT_SYSVSEM}
+        - DEFAULT_PHP_EXT_SYSVSHM=${DEFAULT_PHP_EXT_SYSVSHM}
+        - DEFAULT_PHP_EXT_TIDY=${DEFAULT_PHP_EXT_TIDY}
+        - DEFAULT_PHP_EXT_XSL=${DEFAULT_PHP_EXT_XSL}
+        - DEFAULT_PHP_EXT_ZIP=${DEFAULT_PHP_EXT_ZIP}
+        - DEFAULT_PHP_EXT_PROTOBUF=${DEFAULT_PHP_EXT_PROTOBUF}
+        - DEFAULT_PHP_EXT_XLSWRITER=${DEFAULT_PHP_EXT_XLSWRITER}
+        - DEFAULT_PHP_EXT_GNUPG=${DEFAULT_PHP_EXT_GNUPG}
+        - DEFAULT_PHP_EXT_SSH2=${DEFAULT_PHP_EXT_SSH2}
+        - DEFAULT_PHP_EXT_LIBFAKETIME=${DEFAULT_PHP_EXT_LIBFAKETIME}
+        - DEFAULT_PHP_EXT_REDIS=${DEFAULT_PHP_EXT_REDIS}
+        - DEFAULT_PHP_EXT_SWOOLE=${DEFAULT_PHP_EXT_SWOOLE}
+        - DEFAULT_PHP_EXT_MONGODB=${DEFAULT_PHP_EXT_MONGODB}
+        - DEFAULT_PHP_EXT_AMQP=${DEFAULT_PHP_EXT_AMQP}
+        - DEFAULT_PHP_EXT_SMBCLIENT=${DEFAULT_PHP_EXT_SMBCLIENT}
+        - DEFAULT_PHP_EXT_APCU=${DEFAULT_PHP_EXT_APCU}
+        - DEFAULT_PHP_EXT_YAML=${DEFAULT_PHP_EXT_YAML}
+        - DEFAULT_PHP_EXT_RDKAFKA=${DEFAULT_PHP_EXT_RDKAFKA}
+        - DEFAULT_PHP_EXT_MAILPARSE=${DEFAULT_PHP_EXT_MAILPARSE}
+        - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
+        - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
+        - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
+    image: lysoulwc/php-zts:8.2.10
+    container_name: zts
+    ports:
+      - "9004:9004"
+      - "9005:9005"
+      - "9006:9006"
+      - "9007:9007"
+      - "9008:9008"
+      - "9009:9009"
+      - "9010:9010"
+      - "9011:9011"
+      - "9012:9012"
+      - "9501:9501"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
+      - ${DEFAULT_PHP_DIR}/zts/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/zts/logs:/var/log/php
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
+    networks:
+      - server
+    restart: always
+
+  cli:
+    build:
+      context: ./php/php8/cli
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+        - DEFAULT_PHP_EXT_BCMATH=${DEFAULT_PHP_EXT_BCMATH}
+        - DEFAULT_PHP_EXT_BZ2=${DEFAULT_PHP_EXT_BZ2}
+        - DEFAULT_PHP_EXT_CALENDAR=${DEFAULT_PHP_EXT_CALENDAR}
+        - DEFAULT_PHP_EXT_DBA=${DEFAULT_PHP_EXT_DBA}
+        - DEFAULT_PHP_EXT_DL_TEST=${DEFAULT_PHP_EXT_DL_TEST}
+        - DEFAULT_PHP_EXT_EXIF=${DEFAULT_PHP_EXT_EXIF}
+        - DEFAULT_PHP_EXT_FFI=${DEFAULT_PHP_EXT_FFI}
+        - DEFAULT_PHP_EXT_GD=${DEFAULT_PHP_EXT_GD}
+        - DEFAULT_PHP_EXT_GETTEXT=${DEFAULT_PHP_EXT_GETTEXT}
+        - DEFAULT_PHP_EXT_GMP=${DEFAULT_PHP_EXT_GMP}
+        - DEFAULT_PHP_EXT_IMAP=${DEFAULT_PHP_EXT_IMAP}
+        - DEFAULT_PHP_EXT_INTL=${DEFAULT_PHP_EXT_INTL}
+        - DEFAULT_PHP_EXT_LDAP=${DEFAULT_PHP_EXT_LDAP}
+        - DEFAULT_PHP_EXT_MYSQLI=${DEFAULT_PHP_EXT_MYSQLI}
+        - DEFAULT_PHP_EXT_OPCACHE=${DEFAULT_PHP_EXT_OPCACHE}
+        - DEFAULT_PHP_EXT_PCNTL=${DEFAULT_PHP_EXT_PCNTL}
+        - DEFAULT_PHP_EXT_PDO=${DEFAULT_PHP_EXT_PDO}
+        - DEFAULT_PHP_EXT_PDO_DBLIB=${DEFAULT_PHP_EXT_PDO_DBLIB}
+        - DEFAULT_PHP_EXT_PDO_MYSQL=${DEFAULT_PHP_EXT_PDO_MYSQL}
+        - DEFAULT_PHP_EXT_PSPELL=${DEFAULT_PHP_EXT_PSPELL}
+        - DEFAULT_PHP_EXT_SHMOP=${DEFAULT_PHP_EXT_SHMOP}
+        - DEFAULT_PHP_EXT_SNMP=${DEFAULT_PHP_EXT_SNMP}
+        - DEFAULT_PHP_EXT_SOAP=${DEFAULT_PHP_EXT_SOAP}
+        - DEFAULT_PHP_EXT_SOCKETS=${DEFAULT_PHP_EXT_SOCKETS}
+        - DEFAULT_PHP_EXT_SYSVMSG=${DEFAULT_PHP_EXT_SYSVMSG}
+        - DEFAULT_PHP_EXT_SYSVSEM=${DEFAULT_PHP_EXT_SYSVSEM}
+        - DEFAULT_PHP_EXT_SYSVSHM=${DEFAULT_PHP_EXT_SYSVSHM}
+        - DEFAULT_PHP_EXT_TIDY=${DEFAULT_PHP_EXT_TIDY}
+        - DEFAULT_PHP_EXT_XSL=${DEFAULT_PHP_EXT_XSL}
+        - DEFAULT_PHP_EXT_ZIP=${DEFAULT_PHP_EXT_ZIP}
+        - DEFAULT_PHP_EXT_PROTOBUF=${DEFAULT_PHP_EXT_PROTOBUF}
+        - DEFAULT_PHP_EXT_XLSWRITER=${DEFAULT_PHP_EXT_XLSWRITER}
+        - DEFAULT_PHP_EXT_GNUPG=${DEFAULT_PHP_EXT_GNUPG}
+        - DEFAULT_PHP_EXT_SSH2=${DEFAULT_PHP_EXT_SSH2}
+        - DEFAULT_PHP_EXT_LIBFAKETIME=${DEFAULT_PHP_EXT_LIBFAKETIME}
+        - DEFAULT_PHP_EXT_REDIS=${DEFAULT_PHP_EXT_REDIS}
+        - DEFAULT_PHP_EXT_SWOOLE=${DEFAULT_PHP_EXT_SWOOLE}
+        - DEFAULT_PHP_EXT_MONGODB=${DEFAULT_PHP_EXT_MONGODB}
+        - DEFAULT_PHP_EXT_AMQP=${DEFAULT_PHP_EXT_AMQP}
+        - DEFAULT_PHP_EXT_SMBCLIENT=${DEFAULT_PHP_EXT_SMBCLIENT}
+        - DEFAULT_PHP_EXT_APCU=${DEFAULT_PHP_EXT_APCU}
+        - DEFAULT_PHP_EXT_YAML=${DEFAULT_PHP_EXT_YAML}
+        - DEFAULT_PHP_EXT_RDKAFKA=${DEFAULT_PHP_EXT_RDKAFKA}
+        - DEFAULT_PHP_EXT_MAILPARSE=${DEFAULT_PHP_EXT_MAILPARSE}
+        - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
+        - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
+        - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
+    image: lysoulwc/php-cli:8.2.10
+    container_name: cli
+    ports:
+      - "9100:9100"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
+      - ${DEFAULT_PHP_DIR}/cli/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/cli/logs:/var/log/php
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
     networks:
       - server
     restart: always
@@ -151,3 +328,4 @@ services:
 networks:
   server:
     driver: bridge
+

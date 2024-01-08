@@ -146,6 +146,7 @@ services:
         - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
         - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
         - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
+        - DEFAULT_PHP_EXT_EVENT=${DEFAULT_PHP_EXT_EVENT}
     image: lysoulwc/php-fpm:8.2.10
     container_name: php-fpm
     ports:
@@ -154,7 +155,7 @@ services:
     volumes:
       - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
       - ${DEFAULT_PHP_DIR}/fpm/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ${DEFAULT_PHP_DIR}/fpm/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/fpm/php.ini:/usr/local/etc/php/php.ini
       - ${DEFAULT_PHP_DIR}/fpm/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
@@ -177,7 +178,7 @@ services:
     volumes:
       - ${DEFAULT_WORK_DIR}/php7:/usr/share/nginx/html/php7
       - ${DEFAULT_PHP_DIR}/fpm7/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
-      - ${DEFAULT_PHP_DIR}/fpm7/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/fpm7/php.ini:/usr/local/etc/php/php.ini
       - ${DEFAULT_PHP_DIR}/fpm7/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
@@ -240,6 +241,7 @@ services:
         - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
         - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
         - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
+        - DEFAULT_PHP_EXT_EVENT=${DEFAULT_PHP_EXT_EVENT}
     image: lysoulwc/php-zts:8.2.10
     container_name: zts
     ports:
@@ -257,7 +259,7 @@ services:
     stdin_open: true
     volumes:
       - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
-      - ${DEFAULT_PHP_DIR}/zts/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/zts/php.ini:/usr/local/etc/php/php.ini
       - ${DEFAULT_PHP_DIR}/zts/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
@@ -321,6 +323,7 @@ services:
         - DEFAULT_PHP_EXT_XMLRPC=${DEFAULT_PHP_EXT_XMLRPC}
         - DEFAULT_PHP_EXT_PHALCON=${DEFAULT_PHP_EXT_PHALCON}
         - DEFAULT_PHP_EXT_XDEBUG=${DEFAULT_PHP_EXT_XDEBUG}
+        - DEFAULT_PHP_EXT_EVENT=${DEFAULT_PHP_EXT_EVENT}
     image: lysoulwc/php-cli:8.2.10
     container_name: cli
     ports:
@@ -329,7 +332,7 @@ services:
     stdin_open: true
     volumes:
       - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
-      - ${DEFAULT_PHP_DIR}/cli/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ${DEFAULT_PHP_DIR}/cli/php.ini:/usr/local/etc/php/php.ini
       - ${DEFAULT_PHP_DIR}/cli/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}

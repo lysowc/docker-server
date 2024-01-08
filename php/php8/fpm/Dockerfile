@@ -295,6 +295,16 @@ RUN if [ ${DEFAULT_PHP_EXT_XDEBUG} = true ]; then \
 ;fi
 COPY ./xdebug.ini  /usr/local/etc/php/conf.d/xdebug.ini
 
+ARG DEFAULT_PHP_EXT_EVENT=false
+RUN if [ ${DEFAULT_PHP_EXT_EVENT} = true ]; then \
+    apt install -y libevent-dev && \
+    pecl install event && \
+    docker-php-ext-enable event \
+;fi
+
+#socket 扩展要优先于event加载
+RUN mv /usr/local/etc/php/conf.d/docker-php-ext-event.ini  /usr/local/etc/php/conf.d/docker-php-ext-zevent.ini
+
 #清理日志相关
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \

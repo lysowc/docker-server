@@ -258,7 +258,7 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
+      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}/www
       - ${DEFAULT_PHP_DIR}/zts/php.ini:/usr/local/etc/php/php.ini
       - ${DEFAULT_PHP_DIR}/zts/logs:/var/log/php
     environment:
@@ -331,7 +331,7 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
+      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}/www
       - ${DEFAULT_PHP_DIR}/cli/php.ini:/usr/local/etc/php/php.ini
       - ${DEFAULT_PHP_DIR}/cli/logs:/var/log/php
     environment:

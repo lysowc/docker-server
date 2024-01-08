@@ -1,5 +1,69 @@
 version: '3'
 services:
+  python3:
+    build:
+      context: ./python
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+    image: "lysoulwc/python:3.9.18"
+    container_name: python3
+    ports:
+      - "${DEFAULT_PYTHON_PORT}:7984"
+    volumes:
+      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
+    networks:
+      - server
+    tty: true
+    stdin_open: true
+    restart: always
+
+  golang:
+    build:
+      context: ./golang
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+    image: "lysoulwc/golang:1.21.5"
+    container_name: golang
+    ports:
+      - "${DEFAULT_GOLANG_PORT}:4652"
+    volumes:
+      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
+    networks:
+      - server
+    tty: true
+    stdin_open: true
+    restart: always
+
+  rabbitmq:
+    build:
+      context: ./rabbitmq
+      args:
+        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
+        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
+        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
+        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
+    image: "lysoulwc/rabbitmq:3.12.12"
+    container_name: rabbitmq
+      #ports:
+    environment:
+      TZ: ${DEFAULT_TIME_ZONE}
+    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
+    networks:
+      - server
+    restart: always
+
   nginx:
     build:
       context: ./nginx

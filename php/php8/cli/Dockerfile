@@ -1,7 +1,7 @@
 #zts版本
 FROM php:8.2.10-cli
 
-LABEL maintainer="lysoulwc <lysoulwc@gmail.com>" version="0.01" license="MIT" describe="local-server"
+LABEL maintainer="lysoulwc <lysowc@gmail.com>" version="0.01" license="MIT" describe="local-server"
 
 #替换apt源
 RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apt/sources.list.d/debian.sources && \

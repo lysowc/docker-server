@@ -1,6 +1,6 @@
 FROM mysql:8.0.35
 
-LABEL maintainer="lysoulwc <lysoulwc@gmail.com>" version="0.01" license="MIT" describe="local-server"
+LABEL maintainer="lysoulwc <lysowc@gmail.com>" version="0.01" license="MIT" describe="local-server"
 
 ARG DEFAULT_GROUP_UID=1001
 ARG DEFAULT_USER_UID=1001

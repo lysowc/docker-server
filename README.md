@@ -9,7 +9,7 @@ docker的php环境
 git clone https://gitee.com/lysoul/docker-server.git
 
 #### 执行 docker-server/init.sh
-/path/docker-server/init.sh /path  #这里的path是你环境的根目录
+/path/docker-server/init.sh
 
 #### 安装镜像
 docker-compose up -d

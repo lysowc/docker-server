@@ -27,7 +27,8 @@ RUN pecl install imagick \
 
 ARG DEFAULT_PHP_EXT_GD=false
 RUN if [ ${DEFAULT_PHP_EXT_GD} = true ]; then \
-    apt install -y libpng-dev libjpeg-dev && \
+    apt install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev && \
+    docker-php-ext-configure gd --with-webp=/usr/include/webp --with-jpeg=/usr/include --with-freetype=/usr/include/freetype2 && \
     docker-php-ext-install gd \
 ;fi
 

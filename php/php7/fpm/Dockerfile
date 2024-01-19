@@ -24,8 +24,10 @@ ARG DEFAULT_GROUP_UID=1001
 ARG DEFAULT_USER_UID=1001
 ARG DEFAULT_GROUP_NAME=sora
 ARG DEFAULT_USER_NAME=sora
-RUN groupadd -g ${DEFAULT_GROUP_UID} ${DEFAULT_GROUP_NAME}
-RUN useradd -u ${DEFAULT_USER_UID} -g ${DEFAULT_USER_NAME} ${DEFAULT_GROUP_NAME}
+RUN if [ ${DEFAULT_USER_NAME} != root ]; then \
+    groupadd -g ${DEFAULT_GROUP_UID} ${DEFAULT_GROUP_NAME} && \
+    useradd -s /bin/bash -m -u ${DEFAULT_USER_UID} -g ${DEFAULT_USER_NAME} ${DEFAULT_GROUP_NAME}\
+;fi
 
 #安装pdo_mysql
 RUN docker-php-ext-install pdo_mysql
@@ -69,8 +71,9 @@ RUN apt-get clean && \
 
 
 #安装composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+#RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+#RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+COPY ./composer /usr/local/bin/
 
 WORKDIR /usr/share/nginx/html/php7
 CMD ["php-fpm"]

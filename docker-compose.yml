@@ -1,51 +1,5 @@
 version: '3'
 services:
-  python3:
-    build:
-      context: ./python
-      args:
-        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
-        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
-        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
-        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
-    image: "lysoulwc/python:3.9.18"
-    container_name: python3
-    ports:
-      - "${DEFAULT_PYTHON_PORT}:7984"
-    volumes:
-      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
-    environment:
-      TZ: ${DEFAULT_TIME_ZONE}
-    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
-    networks:
-      - server
-    tty: true
-    stdin_open: true
-    restart: always
-
-  golang:
-    build:
-      context: ./golang
-      args:
-        - DEFAULT_GROUP_NAME=${DEFAULT_GROUP_NAME}
-        - DEFAULT_USER_NAME=${DEFAULT_USER_NAME}
-        - DEFAULT_GROUP_UID=${DEFAULT_GROUP_UID}
-        - DEFAULT_USER_UID=${DEFAULT_USER_UID}
-    image: "lysoulwc/golang:1.21.5"
-    container_name: golang
-    ports:
-      - "${DEFAULT_GOLANG_PORT}:4652"
-    volumes:
-      - ${DEFAULT_WORK_DIR}:/home/${DEFAULT_USER_NAME}
-    environment:
-      TZ: ${DEFAULT_TIME_ZONE}
-    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
-    networks:
-      - server
-    tty: true
-    stdin_open: true
-    restart: always
-
   rabbitmq:
     build:
       context: ./rabbitmq
@@ -56,12 +10,9 @@ services:
         - DEFAULT_USER_UID=${DEFAULT_USER_UID}
     image: "lysoulwc/rabbitmq:3.12.12"
     container_name: rabbitmq
-      #ports:
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
-    user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
-    networks:
-      - server
+    network_mode: "host"
     restart: always
 
   nginx:
@@ -74,9 +25,9 @@ services:
         - DEFAULT_USER_UID=${DEFAULT_USER_UID}
     image: "lysoulwc/nginx:1.25.2"
     container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
+    #ports:
+      #- "80:80"
+      #- "443:443"
     volumes:
       - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
       - ${DEFAULT_NGINX_DIR}/nginx.conf/:/etc/nginx/nginx.conf
@@ -84,10 +35,9 @@ services:
       - ${DEFAULT_NGINX_DIR}/logs:/var/log/nginx
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
-    networks:
-      - server
+    network_mode: "host"
     depends_on:
-      - php-fpm
+      #- php-fpm
       - php-fpm7
     restart: always
 
@@ -149,9 +99,9 @@ services:
         - DEFAULT_PHP_EXT_EVENT=${DEFAULT_PHP_EXT_EVENT}
     image: lysoulwc/php-fpm:8.2.10
     container_name: php-fpm
-    ports:
-      - "9000:9000"
-      - "9003:9003"
+    #ports:
+      #- "9000:9000"
+      #- "9003:9003"
     volumes:
       - ${DEFAULT_WORK_DIR}:/usr/share/nginx/html/
       - ${DEFAULT_PHP_DIR}/fpm/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
@@ -159,8 +109,7 @@ services:
       - ${DEFAULT_PHP_DIR}/fpm/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
-    networks:
-      - server
+    network_mode: "host"
     restart: always
 
   php-fpm7:
@@ -173,8 +122,8 @@ services:
         - DEFAULT_USER_UID=${DEFAULT_USER_UID}
     image: lysoulwc/php-fpm:7.4.3
     container_name: php-fpm7
-    ports:
-      - "9002:9002"
+    #ports:
+      #- "9002:9002"
     volumes:
       - ${DEFAULT_WORK_DIR}/php7:/usr/share/nginx/html/php7
       - ${DEFAULT_PHP_DIR}/fpm7/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
@@ -182,8 +131,7 @@ services:
       - ${DEFAULT_PHP_DIR}/fpm7/logs:/var/log/php
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
-    networks:
-      - server
+    network_mode: "host"
     restart: always
 
   zts:
@@ -244,17 +192,17 @@ services:
         - DEFAULT_PHP_EXT_EVENT=${DEFAULT_PHP_EXT_EVENT}
     image: lysoulwc/php-zts:8.2.10
     container_name: zts
-    ports:
-      - "9004:9004"
-      - "9005:9005"
-      - "9006:9006"
-      - "9007:9007"
-      - "9008:9008"
-      - "9009:9009"
-      - "9010:9010"
-      - "9011:9011"
-      - "9012:9012"
-      - "9501:9501"
+    #ports:
+      #- "9004:9004"
+      #- "9005:9005"
+      #- "9006:9006"
+      #- "9007:9007"
+      #- "9008:9008"
+      #- "9009:9009"
+      #- "9010:9010"
+      #- "9011:9011"
+      #- "9012:9012"
+      #- "9501:9501"
     tty: true
     stdin_open: true
     volumes:
@@ -264,8 +212,7 @@ services:
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
     user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
-    networks:
-      - server
+    network_mode: "host"
     restart: always
 
   cli:
@@ -326,8 +273,8 @@ services:
         - DEFAULT_PHP_EXT_EVENT=${DEFAULT_PHP_EXT_EVENT}
     image: lysoulwc/php-cli:8.2.10
     container_name: cli
-    ports:
-      - "9100:9100"
+    #ports:
+      #- "9100:9100"
     tty: true
     stdin_open: true
     volumes:
@@ -337,8 +284,7 @@ services:
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
     user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
-    networks:
-      - server
+    network_mode: "host"
     restart: always
 
   mysql:
@@ -351,8 +297,8 @@ services:
         - DEFAULT_USER_UID=${DEFAULT_USER_UID}
     image: lysoulwc/mysql:8.0.35
     container_name: mysql
-    ports:
-      - "${DEFAULT_MYSQL_PORT}:3306"
+    #ports:
+        #- "${DEFAULT_MYSQL_PORT}:3306"
     volumes:
       - ${DEFAULT_MYSQL_DIR}/data:/var/lib/mysql
       - ${DEFAULT_MYSQL_DIR}/my.cnf:/etc/my.cnf
@@ -364,8 +310,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DEFAULT_MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIME_ZONE}
     user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
-    networks:
-      - server
+    network_mode: "host"
     restart: always
 
   redis:
@@ -379,20 +324,14 @@ services:
     container_name: redis
     image: lysoulwc/redis:7.2.3
     privileged: true
-    ports:
-      - "${DEFAULT_REDIS_PORT}:6379"
+    #ports:
+      #- "${DEFAULT_REDIS_PORT}:6379"
     volumes:
       - ${DEFAULT_REDIS_DIR}/logs:${DEFAULT_REDIS_DIR}/logs
       - ${DEFAULT_REDIS_DIR}/data:${DEFAULT_REDIS_DIR}/data
       - ${DEFAULT_REDIS_DIR}/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       TZ: ${DEFAULT_TIME_ZONE}
-    networks:
-      - server
+    network_mode: "host"
     user: ${DEFAULT_USER_UID}:${DEFAULT_GROUP_UID}
     restart: always
-
-networks:
-  server:
-    driver: bridge
-

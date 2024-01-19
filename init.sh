@@ -128,30 +128,6 @@ else
     echo "--------------------------------------------"
 fi
 
-#创建 python 目录
-if [ ! -d "$dir/python" ]; then
-    echo "准备创建[ $dir/python ]目录..."
-    echo "--------------------------------------------"
-    mkdir -p $dir/python
-    echo "目录[ $dir/python ]创建完成!"
-    echo "--------------------------------------------"
-else
-    echo "目录[ $dir/python ]已存在"
-    echo "--------------------------------------------"
-fi
-
-#创建 golang 目录
-if [ ! -d "$dir/golang" ]; then
-    echo "准备创建[ $dir/golang ]目录..."
-    echo "--------------------------------------------"
-    mkdir -p $dir/golang
-    echo "目录[ $dir/golang ]创建完成!"
-    echo "--------------------------------------------"
-else
-    echo "目录[ $dir/golang ]已存在"
-    echo "--------------------------------------------"
-fi
-
 #创建 rabbitmq 目录
 if [ ! -d "$dir/rabbitmq" ]; then
     echo "准备创建[ $dir/rabbitmq ]目录..."
